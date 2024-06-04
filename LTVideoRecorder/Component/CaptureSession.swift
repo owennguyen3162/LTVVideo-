@@ -43,7 +43,7 @@ class CaptureSession: NSObject {
             self.session.sessionPreset = AVCaptureSession.Preset.hd1280x720
         
             // video
-            self.videoDevice = AVCaptureDevice.backCamera()
+            self.videoDevice = AVCaptureDevice.frontCamera()
             self.videoInput = try! AVCaptureDeviceInput(device: self.videoDevice)
             self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
             
@@ -57,7 +57,8 @@ class CaptureSession: NSObject {
             self.session.addOutput(self.videoOutput)
             self.videoConnection = self.videoOutput.connection(with: AVMediaType.video)
             self.videoConnection!.videoOrientation = .portrait
-//            self.videoConnection!.isVideoMirrored = self.isFrontCamera
+            // lật camera
+            self.videoConnection!.isVideoMirrored = self.isFrontCamera
             
             // audio
             let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)!

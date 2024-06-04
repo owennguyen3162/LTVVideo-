@@ -11,6 +11,7 @@ class DrawingCanvas: UIView {
     var direction: CGFloat = -1.0 // -1.0 for up, 1.0 for down
     var isTopState: Bool = true // Variable to determine the current state
     var currentPoint = 0.0
+    var isToogle = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,20 +39,8 @@ class DrawingCanvas: UIView {
         super.draw(rect)
         guard let context = UIGraphicsGetCurrentContext(), let image = circleImage else { return }
         context.clear(rect)
+        image.draw(in: moveImage())
 
-        var imageRect: CGRect
-
-        // Set imageRect based on current state
-        if isTopState {
-            imageRect = CGRect(x: bounds.midX - circleRadius, y: circleShape - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
-        } else {
-            imageRect = CGRect(x: circleShape - circleRadius, y: bounds.midY - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
-        }
-
-        // Draw the image
-        image.draw(in: imageRect)
-
-        // Save the image to the buffer
         drawImageBuffer()
     }
 
@@ -66,35 +55,41 @@ class DrawingCanvas: UIView {
     }
 
     @objc private func updateImage() {
-
         let increment: CGFloat = 2.0 // Speed of the image movement
         circleShape += increment * direction
-
-        if circleShape >= 500 {
-            direction = -1.0
+        if circleShape >= (isToogle == false ? 500 : bounds.width - circleRadius) {
+            if(!isToogle){
+                
+                direction = -1.0
+            }else{
+                stopAnimation()
+            }
         } else if circleShape <= circleRadius {
-            direction = 1.0 // chay xuong duoi
+            direction = 1.0
         }
         setNeedsDisplay()
     }
+    
+    private func moveImage () -> CGRect {
+        var imageRect: CGRect
+        
+        if(isToogle == false){
+            currentPoint = circleShape
+        }
+      
+        if isTopState {
+            imageRect = CGRect(x: 30, y: circleShape - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
+        } else {
+            imageRect = CGRect(x: circleShape , y: currentPoint - 10, width: circleRadius * 2, height: circleRadius * 2)
+        }
+        return imageRect
+
+    }
 
     func drawImageBuffer() {
-      
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
-        guard let context = UIGraphicsGetCurrentContext(), let image = circleImage else { return }
-
-        var imageRect: CGRect
-        currentPoint = circleShape
-        // Set imageRect based on current state
-        if isTopState {
-            imageRect = CGRect(x: bounds.midX - circleRadius, y: circleShape - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
-        } else {
-            imageRect = CGRect(x: circleShape - circleRadius, y: bounds.midY - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
-        }
-
-        // Draw the image to the buffer
-        image.draw(in: imageRect)
-
+        guard let _ = UIGraphicsGetCurrentContext(), let image = circleImage else { return }
+        image.draw(in: moveImage())
         imageBuffer = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
     }
@@ -106,15 +101,15 @@ class DrawingCanvas: UIView {
     @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
         // Toggle the state when the user taps
         isTopState.toggle()
+        isToogle = true
 //        print("currentPoint \(currentPoint)")
         stopAnimation()
-     
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {[weak self] in
-            if let self = self {
-                self.direction = 1.0
-                self.startAnimation()
-            }
-        }
+
+            self.direction = 2.0
+            self.startAnimation()
+        
+        circleShape = 30
+       
         // Redraw the view
         setNeedsDisplay()
     }
