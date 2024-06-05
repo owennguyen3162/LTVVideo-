@@ -19,10 +19,13 @@ extension AVCaptureDevice {
     }
     
     fileprivate static func captureDeviceWithPosition(_ position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        let devices = AVCaptureDevice.devices(for: .video)
-        return devices.filter({
-            $0.position == position
-        }).first
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes:
+            [.builtInTrueDepthCamera, .builtInDualCamera, .builtInWideAngleCamera],
+            mediaType: .video, position: .unspecified)
+        let devices = discoverySession.devices
+            guard !devices.isEmpty else { fatalError("Missing capture devices.")}
+
+            return devices.first(where: { device in device.position == position })!
     }
     
 }

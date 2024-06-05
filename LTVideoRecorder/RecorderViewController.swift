@@ -38,6 +38,8 @@ class RecorderViewController: UIViewController {
         super.viewDidLoad()
 //        drawingCanvas.mode = .none
         
+        drawingCanvas.state = .ready
+        
         captureSession.onVideoBuffer = { [weak self] buffer in
             self?.onVideoBuffer(sampleBuffer: buffer)
         }
@@ -87,13 +89,15 @@ class RecorderViewController: UIViewController {
             if let buffer = self.drawingCanvas.getImageBuffer() {
                 frame = self.processor.process(image: frame, withOverlay: buffer)
             }
+            if let buffer = self.drawingCanvas.getImagePlayerBuffer() {
+                frame = self.processor.process(image: frame, withOverlay: buffer)
+            }
 //            if let buffer = self.drawingCanvas.getDrawingBuffer() {
 //                frame = self.processor.process(image: frame, withOverlay: buffer)
 //            }
 //            if let buffer = self.drawingCanvas.getViewBuffer() {
 //                frame = self.processor.process(image: frame, withOverlay: buffer)
-//            }
-//            
+//            }  
             self.processor.ciContext.render(frame, to: pixelBuffer)
             Async.main {
                 self.videoWriter.appendPixelBuffer(pixelBuffer: pixelBuffer, time: time)
@@ -111,6 +115,7 @@ class RecorderViewController: UIViewController {
     
     func startRecording() {
         guard state == .ready else { return }
+        drawingCanvas.state = .recording
         setState(.recording)
         let url = URL(fileURLWithPath: File.shared.absolutePath("test.mp4"))
         File.shared.removeFileAtURL(url)
@@ -120,6 +125,7 @@ class RecorderViewController: UIViewController {
     func stopRecording() {
         guard state == .recording else { return }
         setState(.ready)
+        drawingCanvas.state = .ready
         videoWriter.stopWriting { url in
             Async.main {
                 self.playVideo(url: url)

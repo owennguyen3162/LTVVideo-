@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0706E28D3015C4006EDC5A3F /* Pods_LTVideoRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A069AF609E22BA66BBD93553 /* Pods_LTVideoRecorder.framework */; };
 		A44771E02C0F0CBC00A63594 /* test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44771DF2C0F0CBC00A63594 /* test.swift */; };
+		A44771E22C10116100A63594 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44771E12C10116100A63594 /* Extension.swift */; };
+		A44771E52C1011A100A63594 /* ResizeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44771E42C1011A100A63594 /* ResizeClass.swift */; };
 		B3643B0721D74284007A8C64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3643B0621D74284007A8C64 /* AppDelegate.swift */; };
 		B3643B0C21D74284007A8C64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3643B0A21D74284007A8C64 /* Main.storyboard */; };
 		B3643B0E21D74286007A8C64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3643B0D21D74286007A8C64 /* Assets.xcassets */; };
@@ -39,6 +41,8 @@
 		9912328F9CFD89AAFF916473 /* Pods-LTVideoRecorder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LTVideoRecorder.release.xcconfig"; path = "Pods/Target Support Files/Pods-LTVideoRecorder/Pods-LTVideoRecorder.release.xcconfig"; sourceTree = "<group>"; };
 		A069AF609E22BA66BBD93553 /* Pods_LTVideoRecorder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LTVideoRecorder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A44771DF2C0F0CBC00A63594 /* test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test.swift; sourceTree = "<group>"; };
+		A44771E12C10116100A63594 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		A44771E42C1011A100A63594 /* ResizeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeClass.swift; sourceTree = "<group>"; };
 		B3643B0321D74284007A8C64 /* LTVideoRecorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LTVideoRecorder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3643B0621D74284007A8C64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3643B0B21D74284007A8C64 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -95,6 +99,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A44771E32C10119200A63594 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A44771E42C1011A100A63594 /* ResizeClass.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		B3643AFA21D74284007A8C64 = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +128,7 @@
 		B3643B0521D74284007A8C64 /* LTVideoRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				A44771E32C10119200A63594 /* Utils */,
 				B3643B1C21D745BA007A8C64 /* Foundation */,
 				B3643B1921D744F1007A8C64 /* Component */,
 				B3643B0621D74284007A8C64 /* AppDelegate.swift */,
@@ -157,6 +170,7 @@
 				B3643B1D21D745FC007A8C64 /* XibBasedView.swift */,
 				B3643B2121D74754007A8C64 /* AVCaptureDevice.swift */,
 				B3643B2721D74ABC007A8C64 /* UIImage.swift */,
+				A44771E12C10116100A63594 /* Extension.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -288,6 +302,7 @@
 				B3643B3721D75232007A8C64 /* UIButton.swift in Sources */,
 				B3643B2C21D75158007A8C64 /* Pallet.swift in Sources */,
 				B3643B3321D75173007A8C64 /* DrawingCanvas.swift in Sources */,
+				A44771E52C1011A100A63594 /* ResizeClass.swift in Sources */,
 				B3643B2821D74ABC007A8C64 /* UIImage.swift in Sources */,
 				B3643B0721D74284007A8C64 /* AppDelegate.swift in Sources */,
 				B3643B3E21D758D1007A8C64 /* FileManager.swift in Sources */,
@@ -296,6 +311,7 @@
 				B3643B2621D74A7A007A8C64 /* VideoProcessor.swift in Sources */,
 				B3643B3C21D756D7007A8C64 /* VideoWriter.swift in Sources */,
 				B3643B1E21D745FC007A8C64 /* XibBasedView.swift in Sources */,
+				A44771E22C10116100A63594 /* Extension.swift in Sources */,
 				A44771E02C0F0CBC00A63594 /* test.swift in Sources */,
 				B3643B2421D7480E007A8C64 /* RecorderViewController.swift in Sources */,
 				B3643B3121D75173007A8C64 /* DesignableView.swift in Sources */,

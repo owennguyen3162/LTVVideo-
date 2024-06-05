@@ -40,34 +40,32 @@ class CaptureSession: NSObject {
         guard !loaded else { return }
         loaded = true
         Async.custom(queue: sessionQueue) {
-            self.session.sessionPreset = AVCaptureSession.Preset.hd1280x720
-        
-            // video
+        // Input Video
+        let discoveryVideoSession = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.back)
+            
+            self.videoDevice = discoveryVideoSession.devices.first
+            
             self.videoDevice = AVCaptureDevice.frontCamera()
-            self.videoInput = try! AVCaptureDeviceInput(device: self.videoDevice)
-            self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
-            
-            self.videoOutput.videoSettings = [
-                String(kCVPixelBufferPixelFormatTypeKey) : Int(kCVPixelFormatType_32BGRA),
-                String(kCVPixelBufferWidthKey) : Int(720),
-                String(kCVPixelBufferHeightKey) : Int(1280),
-                String(kCVPixelFormatOpenGLESCompatibility) : kCFBooleanTrue
-            ]
-            self.session.addInput(self.videoInput)
-            self.session.addOutput(self.videoOutput)
-            self.videoConnection = self.videoOutput.connection(with: AVMediaType.video)
-            self.videoConnection!.videoOrientation = .portrait
-            // lật camera
-            self.videoConnection!.isVideoMirrored = self.isFrontCamera
-            
-            // audio
-            let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)!
-            self.audioInput = try! AVCaptureDeviceInput(device: audioDevice)
-            self.audioOutput.setSampleBufferDelegate(self, queue: self.audioOutputQueue)
-            self.session.addInput(self.audioInput)
-            self.session.addOutput(self.audioOutput)
-            self.audioConnection = self.audioOutput.connection(with: AVMediaType.audio)
-        }
+        
+        self.videoDevice = AVCaptureDevice.frontCamera()
+        self.videoInput = try! AVCaptureDeviceInput(device: self.videoDevice)
+        self.videoOutput.setSampleBufferDelegate(self, queue: self.videoOutputQueue)
+
+        self.session.addInput(self.videoInput)
+        self.session.addOutput(self.videoOutput)
+        self.videoConnection = self.videoOutput.connection(with: AVMediaType.video)
+        self.videoConnection!.videoOrientation = .portrait
+        // lật camera
+        self.videoConnection!.isVideoMirrored = self.isFrontCamera
+
+        let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio)!
+        self.audioInput = try! AVCaptureDeviceInput(device: audioDevice)
+        self.audioOutput.setSampleBufferDelegate(self, queue: self.audioOutputQueue)
+        self.session.addInput(self.audioInput)
+        self.session.addOutput(self.audioOutput)
+        self.audioConnection = self.audioOutput.connection(with: AVMediaType.audio)
+                    }
+        
     }
     
     func requestAccess(completion: @escaping ((_ granted: Bool) -> ())) {

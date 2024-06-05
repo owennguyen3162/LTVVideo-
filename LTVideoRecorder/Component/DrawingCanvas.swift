@@ -1,17 +1,36 @@
 import UIKit
 
+
+
 @IBDesignable
 class DrawingCanvas: UIView {
+    
+    enum DrawingCanvasState {
+        case ready
+        case recording
+    }
 
-    var circleImage: UIImage?
+
+    
     var circleRadius: CGFloat = 30.0
-    var circleShape: CGFloat = 0.0 // Updated to store y-coordinate
-    var imageBuffer: UIImage?
+    var circleShape: CGFloat = 300// Updated to store y-coordinate
+  
     var displayLink: CADisplayLink?
     var direction: CGFloat = -1.0 // -1.0 for up, 1.0 for down
     var isTopState: Bool = true // Variable to determine the current state
     var currentPoint = 0.0
     var isToogle = false
+    var isDone = false
+    
+    //Goat
+    var circleImage: UIImage?
+    var imagePlayer: UIImage?
+    
+    var imageBuffer: UIImage?
+    var imageplayerBuffer: UIImage?
+    
+  
+    var state = DrawingCanvasState.ready
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,24 +43,33 @@ class DrawingCanvas: UIView {
     }
 
     private func setup() {
-        circleShape = circleRadius // Updated to initialize at left side
+        circleShape = circleRadius
         startAnimation()
-
-        // Load the image (replace "example.png" with your image file)
-        circleImage = UIImage(named: "Scissor")
+      
         
-        // Add tap gesture recognizer
+        // SetupImage
+        circleImage = UIImage(named: "Scissor")
+        imagePlayer = UIImage(named: "TestImage")
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         self.addGestureRecognizer(tapGesture)
     }
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        guard let context = UIGraphicsGetCurrentContext(), let image = circleImage else { return }
+        guard let context = UIGraphicsGetCurrentContext(), let image = circleImage, let image2 = imagePlayer else { return }
         context.clear(rect)
         image.draw(in: moveImage())
+        image2.draw(in: drawPlayer())
 
+        drawImagePlayerToBuffer()
         drawImageBuffer()
+        
+//        if(!isDrawing){
+          
+//            isDrawing = true
+//        }
+       
     }
 
     func startAnimation() {
@@ -55,17 +83,16 @@ class DrawingCanvas: UIView {
     }
 
     @objc private func updateImage() {
-        let increment: CGFloat = 2.0 // Speed of the image movement
+        let increment: CGFloat = 2.0
         circleShape += increment * direction
         if circleShape >= (isToogle == false ? 500 : bounds.width - circleRadius) {
             if(!isToogle){
-                
-                direction = -1.0
+                direction = -2.0
             }else{
                 stopAnimation()
             }
         } else if circleShape <= circleRadius {
-            direction = 1.0
+            direction = 2.0
         }
         setNeedsDisplay()
     }
@@ -76,14 +103,21 @@ class DrawingCanvas: UIView {
         if(isToogle == false){
             currentPoint = circleShape
         }
+
+        let newSize = ResizeClass.shared.pixelPerfect(forWidth: 62, forHeight: 54)
       
         if isTopState {
-            imageRect = CGRect(x: 30, y: circleShape - circleRadius, width: circleRadius * 2, height: circleRadius * 2)
+            imageRect = CGRect(x: 30, y: circleShape - circleRadius, width: newSize.width , height: newSize.height)
         } else {
-            imageRect = CGRect(x: circleShape , y: currentPoint - 10, width: circleRadius * 2, height: circleRadius * 2)
+            imageRect = CGRect(x: circleShape , y: currentPoint - 25, width: newSize.width , height:newSize.height )
         }
+        
         return imageRect
-
+    }
+    
+    private func drawPlayer() -> CGRect {
+        let newSize = ResizeClass.shared.pixelPerfect(forWidth: 200, forHeight: 490)
+        return CGRect(x: bounds.width / 4.3, y: bounds.height / 2.7, width: newSize.width , height: newSize.height)
     }
 
     func drawImageBuffer() {
@@ -93,24 +127,45 @@ class DrawingCanvas: UIView {
         imageBuffer = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
     }
+    
+    //PLayer
+    func drawImagePlayerToBuffer() {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
+        guard let _ = UIGraphicsGetCurrentContext(), let image = imagePlayer else { return }
+        image.draw(in: drawPlayer())
+        imageplayerBuffer = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+    }
 
     func getImageBuffer() -> UIImage? {
         return imageBuffer
     }
     
+    func getImagePlayerBuffer() -> UIImage? {
+        return imageplayerBuffer
+    }
+    
     @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        // Toggle the state when the user taps
-        isTopState.toggle()
-        isToogle = true
-//        print("currentPoint \(currentPoint)")
-        stopAnimation()
-
+        
+        if state == .ready {
+            return
+        }
+        
+        if !isDone {
+            isDone = true
+            isTopState.toggle()
+            isToogle = true
+            stopAnimation()
             self.direction = 2.0
             self.startAnimation()
-        
-        circleShape = 30
-       
-        // Redraw the view
-        setNeedsDisplay()
+            circleShape = 30
+            setNeedsDisplay()
+        }
     }
+    
+    
+    //Drawing Content Goat
+    
+    
+    
 }
